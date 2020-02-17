@@ -1,7 +1,10 @@
 from setuptools import *
 
 libTM = Extension('libTM',
-                  sources = ['pyTsetlinMachine/ConvolutionalTsetlinMachine.c', 'pyTsetlinMachine/MultiClassConvolutionalTsetlinMachine.c', 'pyTsetlinMachine/Tools.c', 'pyTsetlinMachine/IndexedTsetlinMachine.c'],
+                  sources = ['pyTsetlinMachine/ConvolutionalTsetlinMachine.c',
+                             'pyTsetlinMachine/MultiClassConvolutionalTsetlinMachine.c',
+                             'pyTsetlinMachine/Tools.c',
+                             'pyTsetlinMachine/IndexedTsetlinMachine.c'],
                   include_dirs=['pyTsetlinMachine'])
 
 setup(

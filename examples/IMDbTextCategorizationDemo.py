@@ -5,7 +5,6 @@ import numpy as np
 import keras
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-from keras.datasets import imdb
 from pyTsetlinMachine.tm import MultiClassTsetlinMachine
 from time import time
 
@@ -29,8 +28,8 @@ train,test = keras.datasets.imdb.load_data(num_words=NUM_WORDS, index_from=INDEX
 # Restore np.load for future normal usage
 np.load = np_load_old
 
-train_x,train_y = train
-test_x,test_y = test
+train_x,train_y = train[0:1000]
+test_x,test_y = test[0:1000]
 
 word_to_id = keras.datasets.imdb.get_word_index()
 word_to_id = {k:(v+INDEX_FROM) for k,v in word_to_id.items()}

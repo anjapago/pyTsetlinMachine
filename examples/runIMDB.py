@@ -27,7 +27,12 @@ def run_tsetlin(basepath, datafile, n_epochs = 50):
             Y_test = data['Y_test']
             print(sys.getsizeof(X_train_skb))
 
-        tm = MultiClassTsetlinMachine(10000, 80, 27.0)
+        tm = MultiClassTsetlinMachine(10000, 80, 27.0, dlri=False, indexed=False)
+        mc_tm_class = 0
+        clause=0
+        ta=0
+        #print("ta state: **************************")
+        #print(tm.get_state())
 
         results_df = pd.DataFrame(index = range(n_epochs), columns = ['accuracy', 'TP',
                                                                       'FP', 'TN', 'FN',
@@ -45,10 +50,13 @@ def run_tsetlin(basepath, datafile, n_epochs = 50):
             cProfile.runctx("fit_tm(tm, X_train_skb, Y_train)", globals(),
                             {'tm':tm, 'X_train_skb':X_train_skb, 'Y_train': Y_train},
                             filename = 'fit_profile_'+str(i))
+            print("ta state: **************************")
+            print(tm.get_state())
             stop_training = time()
 
             start_testing = time()
             predicted_class = tm.predict(X_test_skb)
+            print(predicted_class)
             result = 100*(predicted_class == Y_test).mean()
             stop_testing = time()
             test_labels = Y_test
@@ -95,7 +103,7 @@ if __name__ == '__main__':
                 print('computing file: '+filen)
                 existing_results = os.listdir(resultspath)
 
-                run_tsetlin(resultspath, datafile+'/'+filen, n_epochs=10)
+                run_tsetlin(resultspath, datafile+'/'+filen, n_epochs=3)
                 #cProfile.run("run_tsetlin(resultspath, datafile+'/'+filen, n_epochs=10)", "profile")
                 # for result_file in existing_results:
                 #     if filen.split('.')[0] in result_file:

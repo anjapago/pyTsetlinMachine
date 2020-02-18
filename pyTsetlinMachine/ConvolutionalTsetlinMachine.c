@@ -34,7 +34,7 @@ https://arxiv.org/abs/1905.09688
 
 #include "ConvolutionalTsetlinMachine.h"
 
-struct TsetlinMachine *CreateTsetlinMachine(int number_of_clauses, int number_of_features, int number_of_patches, int number_of_ta_chunks, int number_of_state_bits, int T, double s, double s_range, int boost_true_positive_feedback, int weighted_clauses)
+struct TsetlinMachine *CreateTsetlinMachine(int number_of_clauses, int number_of_features, int number_of_patches, int number_of_ta_chunks, int number_of_state_bits, int T, double s, double s_range, int boost_true_positive_feedback, int weighted_clauses, int dlri)
 {
 	/* Set up the Tsetlin Machine structure */
 
@@ -81,6 +81,8 @@ struct TsetlinMachine *CreateTsetlinMachine(int number_of_clauses, int number_of
 	tm->boost_true_positive_feedback = boost_true_positive_feedback;
 
 	tm->weighted_clauses = weighted_clauses;
+
+    tm->dlri = dlri;
 	
 	tm_initialize(tm);
 
@@ -211,6 +213,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 	int output_one_patches_count;
 
 	unsigned int *ta_state = tm->ta_state;
+	int dlri = tm->dlri;
 
 	for (int j = 0; j < tm->number_of_clause_chunks; j++) {
 		tm->clause_output[j] = 0;
@@ -225,6 +228,10 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 			for (int k = 0; k < tm->number_of_ta_chunks-1; k++) {
 				unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + k*tm->number_of_state_bits + tm->number_of_state_bits-1;
 				output = output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos];
+
+				if  (dlri){
+				    output = 0;//((float)fast_rand())/((float)FAST_RAND_MAX) <= 0.5;
+				}
 
 				if (!output) {
 					break;

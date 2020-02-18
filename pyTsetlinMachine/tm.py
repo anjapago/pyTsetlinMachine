@@ -60,7 +60,8 @@ array_1d_int = np.ctypeslib.ndpointer(
 # Multiclass Tsetlin Machine
 
 _lib.CreateMultiClassTsetlinMachine.restype = mc_ctm_pointer                    
-_lib.CreateMultiClassTsetlinMachine.argtypes = [C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_double, C.c_double, C.c_int, C.c_int] 
+_lib.CreateMultiClassTsetlinMachine.argtypes = [C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_int,
+												C.c_double, C.c_double, C.c_int, C.c_int, C.c_int]
 
 _lib.mc_tm_destroy.restype = None                      
 _lib.mc_tm_destroy.argtypes = [mc_ctm_pointer] 
@@ -95,7 +96,8 @@ _lib.mc_tm_clause_configuration.argtypes = [mc_ctm_pointer, C.c_int, C.c_int, ar
 # Tsetlin Machine
 
 _lib.CreateTsetlinMachine.restype = ctm_pointer                    
-_lib.CreateTsetlinMachine.argtypes = [C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_double, C.c_double, C.c_int, C.c_int] 
+_lib.CreateTsetlinMachine.argtypes = [C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_int, C.c_double, C.c_double,
+									  C.c_int, C.c_int, C.c_int]
 
 _lib.tm_fit_regression.restype = None                      
 _lib.tm_fit_regression.argtypes = [ctm_pointer, array_1d_uint, array_1d_int, C.c_int, C.c_int] 
@@ -129,7 +131,8 @@ _lib.itm_transform.restype = None
 _lib.itm_transform.argtypes = [itm_pointer, array_1d_uint, array_1d_uint, C.c_int, C.c_int]
 
 class MultiClassConvolutionalTsetlinMachine2D():
-	def __init__(self, number_of_clauses, T, s, patch_dim, boost_true_positive_feedback=1, number_of_state_bits=8, append_negated=True, weighted_clauses=False, s_range=False):
+	def __init__(self, number_of_clauses, T, s, patch_dim, boost_true_positive_feedback=1, number_of_state_bits=8,
+				 append_negated=True, weighted_clauses=False, s_range=False, dlri = False):
 		self.number_of_clauses = number_of_clauses
 		self.number_of_clause_chunks = (number_of_clauses-1)/32 + 1
 		self.number_of_state_bits = number_of_state_bits
@@ -137,6 +140,7 @@ class MultiClassConvolutionalTsetlinMachine2D():
 		self.T = int(T)
 		self.s = s
 		self.boost_true_positive_feedback = boost_true_positive_feedback
+		self.dlri = dlri
 		self.mc_ctm = None
 		self.append_negated = append_negated
 		self.weighted_clauses = weighted_clauses
@@ -169,7 +173,12 @@ class MultiClassConvolutionalTsetlinMachine2D():
 
 			self.number_of_patches = int((self.dim_x - self.patch_dim[0] + 1)*(self.dim_y - self.patch_dim[1] + 1))
 			self.number_of_ta_chunks = int((self.number_of_features-1)/32 + 1)
-			self.mc_ctm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses, self.number_of_features, self.number_of_patches, self.number_of_ta_chunks, self.number_of_state_bits, self.T, self.s, self.s_range, self.boost_true_positive_feedback, self.weighted_clauses)
+			self.mc_ctm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses,
+															  self.number_of_features, self.number_of_patches,
+															  self.number_of_ta_chunks, self.number_of_state_bits,
+															  self.T, self.s, self.s_range,
+															  self.boost_true_positive_feedback, self.weighted_clauses,
+															  self.dlri)
 		elif incremental == False:
 			_lib.mc_tm_destroy(self.mc_ctm)
 			self.mc_ctm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses, self.number_of_features, self.number_of_patches, self.number_of_ta_chunks, self.number_of_state_bits, self.T, self.s, self.s_range, self.boost_true_positive_feedback, self.weighted_clauses)
@@ -248,13 +257,15 @@ class MultiClassConvolutionalTsetlinMachine2D():
 		return X_transformed.reshape((number_of_examples, self.number_of_classes*self.number_of_clauses))
 
 class MultiClassTsetlinMachine():
-	def __init__(self, number_of_clauses, T, s, boost_true_positive_feedback=1, number_of_state_bits=8, indexed=True, append_negated=True, weighted_clauses=False, s_range=False):
+	def __init__(self, number_of_clauses, T, s, boost_true_positive_feedback=1, number_of_state_bits=8, indexed=True,
+				 append_negated=True, weighted_clauses=False, s_range=False, dlri=False):
 		self.number_of_clauses = number_of_clauses
 		self.number_of_clause_chunks = (number_of_clauses-1)/32 + 1
 		self.number_of_state_bits = number_of_state_bits
 		self.T = int(T)
 		self.s = s
 		self.boost_true_positive_feedback = boost_true_positive_feedback
+		self.dlri = dlri
 		self.mc_tm = None
 		self.itm = None
 		self.indexed = indexed
@@ -287,10 +298,18 @@ class MultiClassTsetlinMachine():
 
 			self.number_of_patches = 1
 			self.number_of_ta_chunks = int((self.number_of_features-1)/32 + 1)
-			self.mc_tm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses, self.number_of_features, 1, self.number_of_ta_chunks, self.number_of_state_bits, self.T, self.s, self.s_range, self.boost_true_positive_feedback, self.weighted_clauses)
+			self.mc_tm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses,
+															 self.number_of_features, 1, self.number_of_ta_chunks,
+															 self.number_of_state_bits, self.T, self.s, self.s_range,
+															 self.boost_true_positive_feedback, self.weighted_clauses,
+															 self.dlri)
 		elif incremental == False:
 			_lib.mc_tm_destroy(self.mc_tm)
-			self.mc_tm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses, self.number_of_features, 1, self.number_of_ta_chunks, self.number_of_state_bits, self.T, self.s, self.s_range, self.boost_true_positive_feedback, self.weighted_clauses)
+			self.mc_tm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses,
+															 self.number_of_features, 1, self.number_of_ta_chunks,
+															 self.number_of_state_bits, self.T, self.s, self.s_range,
+															 self.boost_true_positive_feedback, self.weighted_clauses,
+															 self.dlri)
 
 		if self.indexed:
 			if self.itm != None:

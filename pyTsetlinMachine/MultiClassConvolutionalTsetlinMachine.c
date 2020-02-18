@@ -152,6 +152,7 @@ int mc_tm_ta_state(struct MultiClassTsetlinMachine *mc_tm, int class, int clause
 int mc_tm_ta_action(struct MultiClassTsetlinMachine *mc_tm, int class, int clause, int ta)
 {
 	return tm_ta_action(mc_tm->tsetlin_machines[class], clause, ta);
+	//return 22;
 }
 
 void mc_tm_clause_configuration(struct MultiClassTsetlinMachine *mc_tm, int class, int clause, unsigned int *clause_configuration)

@@ -385,11 +385,16 @@ int tm_ta_state(struct TsetlinMachine *tm, int clause, int ta)
 	int chunk_pos = ta % 32;
 
 	unsigned int pos = clause * tm->number_of_ta_chunks * tm->number_of_state_bits + ta_chunk * tm->number_of_state_bits;
-
+//    printf("In tm_ta_state: ----------------- \n");
 	int state = 0;
 	for (int b = 0; b < tm->number_of_state_bits; ++b) {
+//        printf("tm->ta_state[pos+b]: %d \n", tm->ta_state[pos + b]);
+//        printf("(1 << chunk_pos): %d \n", (1 << chunk_pos));
+//        printf("tm->ta_state[pos + b] & (1 << chunk_pos): %d \n", tm->ta_state[pos + b] & (1 << chunk_pos));
 		if (tm->ta_state[pos + b] & (1 << chunk_pos)) {
-			state |= 1 << b; 
+			state |= 1 << b;
+//            printf("1 << b: %d \n", (1 << b));
+//            printf("state: %d \n", state);
 		}
 	}
 
@@ -402,8 +407,33 @@ int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta)
 	int chunk_pos = ta % 32;
 
 	unsigned int pos = clause * tm->number_of_ta_chunks * tm->number_of_state_bits + ta_chunk * tm->number_of_state_bits + tm->number_of_state_bits-1;
+//	printf("In tm_ta_action: ----------------- \n");
+//	printf("tm->ta_state[pos]: %d \n", tm->ta_state[pos]);
+//    printf("(1 << chunk_pos): %d \n", (1 << chunk_pos));
+//    printf("(tm->ta_state[pos] & (1 << chunk_pos)): %d \n", (tm->ta_state[pos] & (1 << chunk_pos)));
+//    printf("tm_ta_action: %d \n", (tm->ta_state[pos] & (1 << chunk_pos)) > 0);
+    if(tm->dlri){
+        int state = tm_ta_state(tm, clause, ta);
+        printf("dlri: in tm_ta_action check state: %d \n", state);
+        return state > pow(2, tm->number_of_state_bits-1);
+    }
 
 	return (tm->ta_state[pos] & (1 << chunk_pos)) > 0;
+}
+
+void tm_get_action(struct TsetlinMachine *tm, unsigned int *ta_action)
+{
+    for (int clause = 0; clause < tm->number_of_clauses; ++clause) {
+        for (int ta_chunk = 0; ta_chunk < tm->number_of_ta_chunks; ++ta_chunk) {
+            unsigned int pos = clause * tm->number_of_ta_chunks * tm->number_of_state_bits + ta_chunk * tm->number_of_state_bits + tm->number_of_state_bits-1;
+//            for (int b = 0; b < tm->number_of_state_bits; ++b) {
+//                ta_state[pos] = tm->ta_state[pos];
+//                pos++;
+//            }
+
+            ta_action[pos] = (tm->ta_state[pos]); //& (1 << chunk_pos)) > 0;
+        }
+    }
 }
 
 /*****************************************************/

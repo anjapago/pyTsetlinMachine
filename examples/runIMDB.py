@@ -27,7 +27,7 @@ def run_tsetlin(basepath, datafile, n_epochs = 50):
             Y_test = data['Y_test']
             print(sys.getsizeof(X_train_skb))
 
-        tm = MultiClassTsetlinMachine(10000, 80, 27.0, dlri=True, indexed=False)
+        tm = MultiClassTsetlinMachine(10000, 80, 27.0, dlri=False, indexed=False)
 
         results_df = pd.DataFrame(index = range(n_epochs), columns = ['accuracy', 'TP',
                                                                       'FP', 'TN', 'FN',

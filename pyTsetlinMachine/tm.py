@@ -87,6 +87,9 @@ _lib.mc_tm_set_state.argtypes = [mc_ctm_pointer, C.c_int, array_1d_uint]
 _lib.mc_tm_get_state.restype = None
 _lib.mc_tm_get_state.argtypes = [mc_ctm_pointer, C.c_int, array_1d_uint]
 
+_lib.mc_tm_get_action.restype = None
+_lib.mc_tm_get_action.argtypes = [mc_ctm_pointer, C.c_int, array_1d_uint]
+
 _lib.mc_tm_transform.restype = None                    
 _lib.mc_tm_transform.argtypes = [mc_ctm_pointer, array_1d_uint, array_1d_uint, C.c_int, C.c_int] 
 
@@ -368,6 +371,16 @@ class MultiClassTsetlinMachine():
 			state_list.append(ta_states)
 
 		return state_list
+
+	def get_action(self):
+		action_list = []
+		for i in range(self.number_of_classes):
+			ta_actions = np.ascontiguousarray(np.empty(self.number_of_clauses * self.number_of_ta_chunks * self.number_of_state_bits, dtype=np.uint32))
+			print("in tm: get action")
+			_lib.mc_tm_get_action(self.mc_tm, i, ta_actions)
+			action_list.append(ta_actions)
+
+		return action_list
 
 	def set_state(self, ta_states):
 		for i in range(self.number_of_classes):

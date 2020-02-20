@@ -301,6 +301,7 @@ class MultiClassTsetlinMachine():
 
 			self.number_of_patches = 1
 			self.number_of_ta_chunks = int((self.number_of_features-1)/32 + 1)
+			print("init mc tm")
 			self.mc_tm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses,
 															 self.number_of_features, 1, self.number_of_ta_chunks,
 															 self.number_of_state_bits, self.T, self.s, self.s_range,
@@ -308,6 +309,7 @@ class MultiClassTsetlinMachine():
 															 self.dlri)
 		elif incremental == False:
 			_lib.mc_tm_destroy(self.mc_tm)
+			print("init incremental mc tm")
 			self.mc_tm = _lib.CreateMultiClassTsetlinMachine(self.number_of_classes, self.number_of_clauses,
 															 self.number_of_features, 1, self.number_of_ta_chunks,
 															 self.number_of_state_bits, self.T, self.s, self.s_range,
@@ -317,6 +319,7 @@ class MultiClassTsetlinMachine():
 		if self.indexed:
 			if self.itm != None:
 				_lib.itm_destroy(self.itm)
+			print("init indexed tm")
 			self.itm = _lib.CreateIndexedTsetlinMachine(self.mc_tm)
 
 		self.encoded_X = np.ascontiguousarray(np.empty(int(number_of_examples * self.number_of_ta_chunks), dtype=np.uint32))
@@ -325,13 +328,17 @@ class MultiClassTsetlinMachine():
 		Ym = np.ascontiguousarray(Y).astype(np.uint32)
 
 		if self.append_negated:
+			print("encode tm (append negated)")
 			_lib.tm_encode(Xm, self.encoded_X, number_of_examples, self.number_of_features//2, 1, 1, self.number_of_features//2, 1, 1)
 		else:
+			print("encode tm")
 			_lib.tm_encode(Xm, self.encoded_X, number_of_examples, self.number_of_features, 1, 1, self.number_of_features, 1, 0)
 		
 		if self.indexed:
+			print("fit indexed")
 			_lib.itm_fit(self.itm, self.encoded_X, Ym, number_of_examples, epochs)
 		else:
+			print("fit mc tm")
 			_lib.mc_tm_fit(self.mc_tm, self.encoded_X, Ym, number_of_examples, epochs)
 
 		return

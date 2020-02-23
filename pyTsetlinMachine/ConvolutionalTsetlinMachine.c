@@ -207,11 +207,11 @@ static inline int sum_up_class_votes(struct TsetlinMachine *tm)
 	return class_sum;
 }
 
-int get_ta_chunk_actions(struct TsetlinMachine *tm, int ta_chunk, int clause){
+int get_ta_chunk_actions(struct TsetlinMachine *tm, int ta_chunk, int clause, int dlri){
     unsigned int ta_actions = 0;
     for(int chunk_pos=0; chunk_pos<32; chunk_pos++){
         int ta = ta_chunk*32+chunk_pos;
-        int ta_action = tm_ta_action(tm, clause, ta, 0);
+        int ta_action = tm_ta_action(tm, clause, ta, 0, dlri);
 
         // if ta action is 1: put a one in ta_actions at bit "chunk_pos"
         if(ta_action){
@@ -253,7 +253,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 //              printf("output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos] %d \n ", (output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos]));
 
                 //int ta_actions = ta_state[pos];
-                int ta_actions = get_ta_chunk_actions(tm, k, j);
+                int ta_actions = get_ta_chunk_actions(tm, k, j, dlri);
                 output = output && (ta_actions & Xi[patch*tm->number_of_ta_chunks + k]) == ta_actions;
                 printf("original output: %d \n ", output);
 
@@ -298,7 +298,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
             unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + (tm->number_of_ta_chunks-1)*tm->number_of_state_bits + tm->number_of_state_bits-1;
 			//int ta_actions = ta_state[pos];
             int k = tm->number_of_ta_chunks - 1;
-            int ta_actions = get_ta_chunk_actions(tm, k, j);
+            int ta_actions = get_ta_chunk_actions(tm, k, j, dlri);
 
             output = output &&
                      (ta_actions & Xi[patch*tm->number_of_ta_chunks + tm->number_of_ta_chunks - 1] & tm->filter) ==
@@ -531,7 +531,7 @@ int tm_ta_state(struct TsetlinMachine *tm, int clause, int ta)
 	return state;
 }
 
-int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta, int print)
+int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta, int print, int dlri)
 {
 	int ta_chunk = ta / 32;
 	int chunk_pos = ta % 32;
@@ -544,7 +544,7 @@ int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta, int print)
 //    printf("tm_ta_action: %d \n", (tm->ta_state[pos] & (1 << chunk_pos)) > 0);
     int original = (tm->ta_state[pos] & (1 << chunk_pos)) > 0;
 
-    if(tm->dlri){
+    if(dlri){
         int state = tm_ta_state(tm, clause, ta);
         int max_state = pow(2, tm->number_of_state_bits)-1;
         //printf("dlri: in tm_ta_action check state: %d \n", state);

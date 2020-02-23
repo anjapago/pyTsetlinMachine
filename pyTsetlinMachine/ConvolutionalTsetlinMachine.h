@@ -78,9 +78,9 @@ int tm_score(struct TsetlinMachine *tm, unsigned int *Xi);
 
 int tm_ta_state(struct TsetlinMachine *tm, int clause, int ta);
 
-int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta, int print);
+int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta, int print, int dlri);
 
-int get_ta_chunk_actions(struct TsetlinMachine *tm, int ta_chunk, int clause);
+int get_ta_chunk_actions(struct TsetlinMachine *tm, int ta_chunk, int clause, int dlri);
 
 void tm_update_regression(struct TsetlinMachine *tm, unsigned int *Xi, int target);
 

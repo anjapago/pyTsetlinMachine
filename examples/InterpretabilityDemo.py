@@ -15,7 +15,7 @@ X_test = np.random.randint(0, 2, size=(num_exs_test, number_of_features), dtype=
 Y_test = np.logical_xor(X_test[:,0], X_test[:,1]).astype(dtype=np.uint32)
 
 n_clauses = 10
-tm = MultiClassTsetlinMachine(n_clauses, 15, 3.0, dlri = False, indexed=False,
+tm = MultiClassTsetlinMachine(n_clauses, 15, 3.0, dlri = True, indexed=False,
                               number_of_state_bits=16, boost_true_positive_feedback=0)
 
 print("fit:")

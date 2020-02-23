@@ -80,6 +80,8 @@ int tm_ta_state(struct TsetlinMachine *tm, int clause, int ta);
 
 int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta, int print);
 
+int get_ta_chunk_actions(struct TsetlinMachine *tm, int ta_chunk, int clause);
+
 void tm_update_regression(struct TsetlinMachine *tm, unsigned int *Xi, int target);
 
 void tm_fit_regression(struct TsetlinMachine *tm, unsigned int *X, int *y, int number_of_examples, int epochs);

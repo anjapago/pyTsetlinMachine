@@ -107,7 +107,7 @@ void itm_initialize(struct IndexedTsetlinMachine *itm)
 	for (int k = 0; k < itm->mc_tm->tsetlin_machines[0]->number_of_features; ++k) {
 		for (int i = 0; i < itm->mc_tm->number_of_classes; ++i) {
 			for (int j = 0; j < itm->mc_tm->tsetlin_machines[i]->number_of_clauses; ++j) {
-				if (mc_tm_ta_action(itm->mc_tm, i, j, k) == 1) {
+				if (mc_tm_ta_action(itm->mc_tm, i, j, k, 0) == 1) {
 					itm_add_clause(itm, i, j, k);
 				}
 			}
@@ -159,7 +159,7 @@ void itm_predict(struct IndexedTsetlinMachine *itm, unsigned int *X, int *y, int
 		for (int j = 0; j < itm->mc_tm->tsetlin_machines[0]->number_of_clauses; ++j) {
 			int all_exclude = 1;
 			for (int k = 0; k < itm->mc_tm->tsetlin_machines[0]->number_of_features; ++k) {
-				if (mc_tm_ta_action(itm->mc_tm, i, j, k) == 1) {
+				if (mc_tm_ta_action(itm->mc_tm, i, j, k, 0) == 1) {
 					all_exclude = 0;
 					break;
 				}

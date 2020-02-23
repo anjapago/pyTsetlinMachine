@@ -56,7 +56,7 @@ void mc_tm_set_state(struct MultiClassTsetlinMachine *mc_tm, int class, unsigned
 
 int mc_tm_ta_state(struct MultiClassTsetlinMachine *mc_tm, int class, int clause, int ta);
 
-int mc_tm_ta_action(struct MultiClassTsetlinMachine *mc_tm, int class, int clause, int ta);
+int mc_tm_ta_action(struct MultiClassTsetlinMachine *mc_tm, int class, int clause, int ta, int print);
 
 void mc_tm_transform(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X,  unsigned int *X_transformed, int invert, int number_of_examples);
 

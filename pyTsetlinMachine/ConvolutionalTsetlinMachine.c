@@ -218,50 +218,137 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 	for (int j = 0; j < tm->number_of_clause_chunks; j++) {
 		tm->clause_output[j] = 0;
 	}
-    printf("LIB: tm_calculate_clause_output ");
-	printf("number of ta chunks: %d \n", (tm->number_of_ta_chunks-1));
-    printf("number of patches: %d \n", (tm->number_of_patches));
+    //printf("LIB: tm_calculate_clause_output ");
+	//printf("number of ta chunks: %d \n", (tm->number_of_ta_chunks-1));
+    //printf("number of patches: %d \n", (tm->number_of_patches));
 	for (int j = 0; j < tm->number_of_clauses; j++) {
 		output_one_patches_count = 0;
 		for (int patch = 0; patch < tm->number_of_patches; ++patch) {
 			unsigned int output = 1;
+			unsigned int outputd = 1;
 			unsigned int all_exclude = 1;
 
 			for (int k = 0; k < tm->number_of_ta_chunks-1; k++) {
-			    printf("num ta chunk %d \n", k);
+			    //printf("num ta chunk %d \n", k);
 				unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + k*tm->number_of_state_bits + tm->number_of_state_bits-1;
 				// actions for all the ta in the chunk are: ta_state[pos]
-				printf("output %d, ta_state[pos] %d", output, ta_state[pos]);
-				printf("(ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) %d \n ", (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]));
-				printf("ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos] %d \n ", ((ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos]));
-                printf("output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos] %d \n ", (output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos]));
-				output = output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos];
+//				printf("output %d, ta_state[pos] %d ", output, ta_state[pos]);
+//				printf("(ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) %d \n ", (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]));
+//				printf("ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos] %d \n ", ((ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos]));
+//              printf("output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos] %d \n ", (output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos]));
+
+                output = output && (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) == ta_state[pos];
+                printf("original output: %d \n ", output);
 
 				if  (dlri){
-				    // get actions for all the ta in the chunk
-				    output = 0;//((float)fast_rand())/((float)FAST_RAND_MAX) <= 0.5;
+				    // for each ta in the chunk, check the output of its clause, and track it in output
+                    for (int chunk_pos=0; chunk_pos<32; chunk_pos++){
+                        // get the action for the ta
+                        //int ta_num = 1; // the position of the ta within the chunk: "chunk_pos"
+                        int action = (tm->ta_state[pos] & (1 << chunk_pos)) > 0; //tm_ta_action(tm, j, k*32+chunk_pos, 1); // j is the clause number
+
+                        // and it with the Xii: if action is 1, check if Xi feature is there, if its 0, don't need to check
+                        int clause_output = 1;
+
+                        if (action){ // if action is to include the feature, check if the feature is present
+                            int feature_bits = Xi[patch*tm->number_of_ta_chunks + k];
+                            // check the bit at position ta_num
+                            int bit = (feature_bits >> chunk_pos) & 1U;
+
+                            if(!bit){
+                                clause_output = 0;
+                            }
+                        }
+                        // && it with the current output and save it in output again
+                        outputd = outputd && clause_output;
+                    }
+                    printf("dlir output: %d \n ", outputd);
 				}
 
-				if (!output) {
+				if (!outputd) {
 					break;
 				}
 				all_exclude = all_exclude && (ta_state[pos] == 0);
 			}
 
-            // do this for the last ta chunk:
-			unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + (tm->number_of_ta_chunks-1)*tm->number_of_state_bits + tm->number_of_state_bits-1;
-			output = output &&
-				(ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + tm->number_of_ta_chunks - 1] & tm->filter) ==
-				(ta_state[pos] & tm->filter);
+            // do this again for the last ta chunk:
+//            unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + (tm->number_of_ta_chunks-1)*tm->number_of_state_bits + tm->number_of_state_bits-1;
+//            outputd = outputd &&
+//                      (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + tm->number_of_ta_chunks - 1] & tm->filter) ==
+//                      (ta_state[pos] & tm->filter);
 
-			all_exclude = all_exclude && ((ta_state[pos] & tm->filter) == 0);
+            unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + (tm->number_of_ta_chunks-1)*tm->number_of_state_bits + tm->number_of_state_bits-1;
+            int k = tm->number_of_ta_chunks - 1;
+			if(!dlri){
+//
+//                output = output &&
+//                      (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + tm->number_of_ta_chunks - 1] & tm->filter) ==
+//                      (ta_state[pos] & tm->filter);
+                for (int chunk_pos=0; chunk_pos<32; chunk_pos++){
+                    // get the action for the ta
+                    //int ta_num = 1; // the position of the ta within the chunk: "chunk_pos"
+                    int action = tm_ta_action(tm, j, k*32+chunk_pos, 1); // j is the clause number
 
-			output = output && !(predict == PREDICT && all_exclude == 1);
+                    // and it with the Xii: if action is 1, check if Xi feature is there, if its 0, don't need to check
+                    int clause_output = 1;
 
-			if (output) {
-				tm->output_one_patches[output_one_patches_count] = patch;
-				output_one_patches_count++;
-			}
+                    if (action){
+                        int feature_bits = Xi[patch*tm->number_of_ta_chunks + k];
+                        // check the bit at position ta_num
+                        int bit = (feature_bits >> chunk_pos) & 1U;
+                        bit = (tm->filter >> chunk_pos) & 1U;
+
+                        if(!bit){
+                            clause_output = 0;
+                        }
+                    }
+                    // && it with the current output and save it in output again
+                    output = output && clause_output;
+                }
+
+                all_exclude = all_exclude && ((ta_state[pos] & tm->filter) == 0);
+
+                output = output && !(predict == PREDICT && all_exclude == 1);
+
+                if (output) {
+                    tm->output_one_patches[output_one_patches_count] = patch;
+                    output_one_patches_count++;
+                }
+            }else{
+                for (int chunk_pos=0; chunk_pos<32; chunk_pos++){
+                    // get the action for the ta
+                    //int ta_num = 1; // the position of the ta within the chunk: "chunk_pos"
+                    int action = tm_ta_action(tm, j, k*32+chunk_pos, 1); // j is the clause number
+
+                    // and it with the Xii: if action is 1, check if Xi feature is there, if its 0, don't need to check
+                    int clause_output = 1;
+
+                    if (action){
+                        int feature_bits = Xi[patch*tm->number_of_ta_chunks + k];
+                        // check the bit at position ta_num
+                        int bit = (feature_bits >> chunk_pos) & 1U;
+                        bit = (tm->filter >> chunk_pos) & 1U;
+
+                        if(!bit){
+                            clause_output = 0;
+                        }
+                    }
+                    // && it with the current output and save it in output again
+                    outputd = outputd && clause_output;
+                }
+                //printf("dlir output: %d \n ", outputd);
+
+                all_exclude = all_exclude && ((ta_state[pos] & tm->filter) == 0);
+
+                outputd = outputd && !(predict == PREDICT && all_exclude == 1);
+
+                if (outputd) {
+                    tm->output_one_patches[output_one_patches_count] = patch;
+                    output_one_patches_count++;
+                }
+
+            }
+
 		}
 	
 		if (output_one_patches_count > 0) {
@@ -402,7 +489,7 @@ int tm_ta_state(struct TsetlinMachine *tm, int clause, int ta)
 //        printf("tm->ta_state[pos+b]: %d \n", tm->ta_state[pos + b]);
 //        printf("(1 << chunk_pos): %d \n", (1 << chunk_pos));
 //        printf("tm->ta_state[pos + b] & (1 << chunk_pos): %d \n", tm->ta_state[pos + b] & (1 << chunk_pos));
-		if (tm->ta_state[pos + b] & (1 << chunk_pos)) {
+		if (tm->ta_state[pos + b] & (1 << chunk_pos)) { // checks for ta at certain position within the chunk
 			state |= 1 << b;
 //            printf("1 << b: %d \n", (1 << b));
 //            printf("state: %d \n", state);
@@ -412,7 +499,7 @@ int tm_ta_state(struct TsetlinMachine *tm, int clause, int ta)
 	return state;
 }
 
-int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta)
+int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta, int print)
 {
 	int ta_chunk = ta / 32;
 	int chunk_pos = ta % 32;
@@ -423,6 +510,8 @@ int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta)
 //    printf("(1 << chunk_pos): %d \n", (1 << chunk_pos));
 //    printf("(tm->ta_state[pos] & (1 << chunk_pos)): %d \n", (tm->ta_state[pos] & (1 << chunk_pos)));
 //    printf("tm_ta_action: %d \n", (tm->ta_state[pos] & (1 << chunk_pos)) > 0);
+    int original = (tm->ta_state[pos] & (1 << chunk_pos)) > 0;
+
     if(tm->dlri){
         int state = tm_ta_state(tm, clause, ta);
         int max_state = pow(2, tm->number_of_state_bits)-1;
@@ -430,11 +519,11 @@ int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta)
 
         // use dlri method of choosing action: based on probs of the state:
         float action_prob = (float)state/(float)max_state;
-        printf("state: %d, max state: %d, ", state, max_state);
+
 
         // choose action based on the action prob:
         float rand_val = ((float)fast_rand())/((float)FAST_RAND_MAX); // a random value between 0 and 1
-        printf("randval: %f, action_prob: %f \n", rand_val, action_prob);
+
         int action = rand_val < action_prob;
 
 //        int original_action = (tm->ta_state[pos] & (1 << chunk_pos)) > 0;
@@ -442,6 +531,15 @@ int tm_ta_action(struct TsetlinMachine *tm, int clause, int ta)
 //        if(action != original_action){
 //            printf("ACTIONS NOT EQUAL, original: %d, dlri action: %d, state: %d \n", original_action, action, state);
 //        }
+
+        if(print){
+            if(original==action){
+                printf("EQUAL******* ");
+            }
+            printf("original %d, dlri action: %d ", original, action);
+            printf("state: %d, max state: %d, ", state, max_state);
+            printf("randval: %f, action_prob: %f \n", rand_val, action_prob);
+        }
         return action;
     }
 

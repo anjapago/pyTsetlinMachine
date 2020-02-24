@@ -78,6 +78,11 @@ void mc_tm_destroy(struct MultiClassTsetlinMachine *mc_tm)
 /*** Predict classes of inputs X ***/
 /***********************************/
 
+void printarray (int arg[], int length) {
+    for (int n=0; n<length; ++n)
+        printf("with class sum: %d, there were tied %d  \n", n, arg[n]);
+}
+
 void mc_tm_predict(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X, int *y, int number_of_examples, int dlri)
 {
 	int max_class;
@@ -86,6 +91,12 @@ void mc_tm_predict(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X, int 
 	unsigned int step_size = mc_tm->number_of_patches * mc_tm->number_of_ta_chunks;
 
 	unsigned int pos = 0;
+
+    int num_tied = 0;
+    int count_class_sum [2*mc_tm->tsetlin_machines[0]->number_of_clauses];
+    for (int class_sum=0; class_sum<2*mc_tm->tsetlin_machines[0]->number_of_clauses; class_sum++){
+        count_class_sum[class_sum] = 0;
+    }
 
 	for (int l = 0; l < number_of_examples; l++) {
 		// Identify class with largest output
@@ -97,12 +108,20 @@ void mc_tm_predict(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X, int 
 				max_class_sum = class_sum;
 				max_class = i;
 			}
+			if (max_class_sum == class_sum){
+			    num_tied = num_tied+1;
+			    // keep a count specific to the actual values of the sums that were tied
+			    count_class_sum[class_sum+mc_tm->tsetlin_machines[i]->number_of_clauses-1] = count_class_sum[class_sum+mc_tm->tsetlin_machines[i]->number_of_clauses-1] +1;
+			}
 		}
 
 		y[l] = max_class;
 
 		pos += step_size;
+
 	}
+    printf("number of times predictions were tied: sum= %d \n", num_tied);
+    printarray(count_class_sum, 2*mc_tm->tsetlin_machines[0]->number_of_clauses);
 	
 	return;
 }

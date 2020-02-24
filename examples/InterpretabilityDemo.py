@@ -8,7 +8,7 @@ import numpy as np
 
 number_of_features = 2
 noise = 0
-num_exs_train = 5000
+num_exs_train = 1000000
 num_exs_test = 2000
 
 X_train = np.random.randint(0, 2, size=(num_exs_train, number_of_features), dtype=np.uint32)
@@ -23,15 +23,15 @@ Y_test = np.logical_xor(X_test[:,0], X_test[:,1]).astype(dtype=np.uint32)
 # T= 15
 # s=3.0
 
-n_clauses = 6
-nstate_bits = 16
+n_clauses = 10
+nstate_bits = 12
 T = 15
 s = 3.0
 tm = MultiClassTsetlinMachine(n_clauses, T, s, dlri = True, indexed=False,
                               number_of_state_bits=nstate_bits, boost_true_positive_feedback=0)
 
 print("fit:")
-tm.fit(X_train, Y_train, epochs=10000)
+tm.fit(X_train, Y_train, epochs=1)
 
 print("\nClass 0 Positive Clauses:\n")
 class_num = 0

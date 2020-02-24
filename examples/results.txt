@@ -189,3 +189,409 @@ State: 0 state prob: 0.0
  non dlri action: 0
 
 Process finished with exit code 0
+
+
+#########################
+Run with more clauses (10), to prevent so many ties:
+Findings:
+- there were less ties, but still some ties exist
+- the original TA predict function is able to get 100% despite the ties
+- the dlri predict is only getting around 75% despite having the same states configuration
+--> noticed that some of the LA have not converged, with probabilities and states still around 0.5
+--> need to re-run until convergence
+**** Is the predict function fixed??? did adding more clauses solve it?
+
+Class 0 Positive Clauses:
+
+Clause #0:
+¬x1
+Clause #2:
+¬x0 ∧ ¬x1
+Clause #4:
+
+Clause #6:
+
+Clause #8:
+¬x0 ∧ ¬x1
+
+Class 0 Negative Clauses:
+
+Clause #1:
+ x0 ∧ ¬x1
+Clause #3:
+ x0 ∧ ¬x1
+Clause #5:
+ x0 ∧ ¬x1
+Clause #7:
+ x1 ∧ ¬x0
+Clause #9:
+ x0 ∧ ¬x1
+
+Class 1 Positive Clauses:
+
+Clause #0:
+ x0 ∧ ¬x1
+Clause #2:
+ x0 ∧ ¬x1
+Clause #4:
+ x0 ∧ ¬x1
+Clause #6:
+ x0 ∧ ¬x1
+Clause #8:
+ x0 ∧ ¬x1
+
+Class 1 Negative Clauses:
+
+Clause #1:
+¬x1
+Clause #3:
+ x0 ∧  x1
+Clause #5:
+ x0 ∧  x1
+Clause #7:
+¬x0 ∧ ¬x1
+Clause #9:
+¬x0 ∧ ¬x1
+num clause chunks: 1.28125
+num clauses: 10
+num ta chunks: 1
+num ta state bits: 16
+number of times predictions were tied: sum=709
+Accuracy: 77.35
+number of times predictions were tied: sum=726
+Accuracy: 78.35
+number of times predictions were tied: sum=722
+Accuracy: 77.85
+number of times predictions were tied: sum=701
+Accuracy: 77.4
+number of times predictions were tied: sum=728
+Accuracy: 78.35
+number of times predictions were tied: sum=951
+TA Accuracy: 100.0
+
+Class 1 Negative Clauses:
+
+State: 24422 state prob: 0.372650146484375
+ avg dlri action: 0.44
+ non dlri action: 0
+State: 9939 state prob: 0.1516571044921875
+ avg dlri action: 0.19
+ non dlri action: 0
+State: 32767 state prob: 0.4999847412109375
+ avg dlri action: 0.46
+ non dlri action: 0
+State: 32771 state prob: 0.5000457763671875
+ avg dlri action: 0.48
+ non dlri action: 1
+State: 32769 state prob: 0.5000152587890625
+ avg dlri action: 0.55
+ non dlri action: 1
+State: 32768 state prob: 0.5
+ avg dlri action: 0.45
+ non dlri action: 1
+State: 8737 state prob: 0.1333160400390625
+ avg dlri action: 0.1
+ non dlri action: 0
+State: 23830 state prob: 0.363616943359375
+ avg dlri action: 0.35
+ non dlri action: 0
+State: 32771 state prob: 0.5000457763671875
+ avg dlri action: 0.47
+ non dlri action: 1
+State: 32769 state prob: 0.5000152587890625
+ avg dlri action: 0.5
+ non dlri action: 1
+State: 8836 state prob: 0.13482666015625
+ avg dlri action: 0.08
+ non dlri action: 0
+State: 23738 state prob: 0.362213134765625
+ avg dlri action: 0.39
+ non dlri action: 0
+State: 24180 state prob: 0.36895751953125
+ avg dlri action: 0.36
+ non dlri action: 0
+State: 9659 state prob: 0.1473846435546875
+ avg dlri action: 0.17
+ non dlri action: 0
+State: 32772 state prob: 0.50006103515625
+ avg dlri action: 0.54
+ non dlri action: 1
+State: 32774 state prob: 0.500091552734375
+ avg dlri action: 0.45
+ non dlri action: 1
+State: 23743 state prob: 0.3622894287109375
+ avg dlri action: 0.4
+ non dlri action: 0
+State: 9163 state prob: 0.1398162841796875
+ avg dlri action: 0.12
+ non dlri action: 0
+State: 32768 state prob: 0.5
+ avg dlri action: 0.56
+ non dlri action: 1
+State: 32770 state prob: 0.500030517578125
+ avg dlri action: 0.47
+ non dlri action: 1
+
+
+####################################
+Try running again, with details of what were the sums that got tied:
+Note: class sum actually starts at -#clauses, so at class sum=10, this is actually class sum =0
+Findings:
+- class sum =0 (i.e. 10) had the most tied class sums
+- how to fix this? if its binary: why not only run it for one class with postiive and negative clauses learned for that class only
+--> then the only cases that will be tied is when they are both 0? --> theoretically this should not fix it,
+but it should simplify the set up to make it less confusing
+***** another finding, there were always the exact same number of predictions tied, even though the class sums were different... why
+***** the accuracies were all 100 even though there were many ties -- why
+
+
+Class 0 Positive Clauses:
+
+Clause #0:
+¬x0 ∧ ¬x1
+Clause #2:
+¬x0 ∧ ¬x1
+Clause #4:
+¬x0 ∧ ¬x1
+Clause #6:
+ x0 ∧  x1
+Clause #8:
+ x0 ∧  x1
+
+Class 0 Negative Clauses:
+
+Clause #1:
+ x1 ∧ ¬x0
+Clause #3:
+ x1 ∧ ¬x0
+Clause #5:
+ x0 ∧ ¬x1
+Clause #7:
+ x1 ∧ ¬x0
+Clause #9:
+ x0 ∧ ¬x1
+
+Class 1 Positive Clauses:
+
+Clause #0:
+ x1 ∧ ¬x0
+Clause #2:
+ x1 ∧ ¬x0
+Clause #4:
+ x1
+Clause #6:
+ x0 ∧ ¬x1
+Clause #8:
+ x1 ∧ ¬x0
+
+Class 1 Negative Clauses:
+
+Clause #1:
+ x0 ∧  x1
+Clause #3:
+¬x0 ∧ ¬x1
+Clause #5:
+ x0 ∧  x1
+Clause #7:
+¬x0 ∧ ¬x1
+Clause #9:
+ x0 ∧  x1
+num clause chunks: 1.28125
+num clauses: 10
+num ta chunks: 1
+num ta state bits: 12
+number of times predictions were tied: sum= 1010
+with class sum: 0, there were tied 0
+with class sum: 1, there were tied 0
+with class sum: 2, there were tied 0
+with class sum: 3, there were tied 0
+with class sum: 4, there were tied 0
+with class sum: 5, there were tied 0
+with class sum: 6, there were tied 0
+with class sum: 7, there were tied 0
+with class sum: 8, there were tied 0
+with class sum: 9, there were tied 1
+with class sum: 10, there were tied 391
+with class sum: 11, there were tied 245
+with class sum: 12, there were tied 259
+with class sum: 13, there were tied 114
+with class sum: 14, there were tied 0
+with class sum: 15, there were tied 0
+with class sum: 16, there were tied 0
+with class sum: 17, there were tied 0
+with class sum: 18, there were tied 0
+with class sum: 19, there were tied 0
+Accuracy: 100.0
+number of times predictions were tied: sum= 1010
+with class sum: 0, there were tied 0
+with class sum: 1, there were tied 0
+with class sum: 2, there were tied 0
+with class sum: 3, there were tied 0
+with class sum: 4, there were tied 0
+with class sum: 5, there were tied 0
+with class sum: 6, there were tied 0
+with class sum: 7, there were tied 0
+with class sum: 8, there were tied 0
+with class sum: 9, there were tied 0
+with class sum: 10, there were tied 399
+with class sum: 11, there were tied 245
+with class sum: 12, there were tied 255
+with class sum: 13, there were tied 111
+with class sum: 14, there were tied 0
+with class sum: 15, there were tied 0
+with class sum: 16, there were tied 0
+with class sum: 17, there were tied 0
+with class sum: 18, there were tied 0
+with class sum: 19, there were tied 0
+Accuracy: 100.0
+number of times predictions were tied: sum= 1010
+with class sum: 0, there were tied 0
+with class sum: 1, there were tied 0
+with class sum: 2, there were tied 0
+with class sum: 3, there were tied 0
+with class sum: 4, there were tied 0
+with class sum: 5, there were tied 0
+with class sum: 6, there were tied 0
+with class sum: 7, there were tied 0
+with class sum: 8, there were tied 0
+with class sum: 9, there were tied 0
+with class sum: 10, there were tied 394
+with class sum: 11, there were tied 246
+with class sum: 12, there were tied 264
+with class sum: 13, there were tied 106
+with class sum: 14, there were tied 0
+with class sum: 15, there were tied 0
+with class sum: 16, there were tied 0
+with class sum: 17, there were tied 0
+with class sum: 18, there were tied 0
+with class sum: 19, there were tied 0
+Accuracy: 100.0
+number of times predictions were tied: sum= 1010
+with class sum: 0, there were tied 0
+with class sum: 1, there were tied 0
+with class sum: 2, there were tied 0
+with class sum: 3, there were tied 0
+with class sum: 4, there were tied 0
+with class sum: 5, there were tied 0
+with class sum: 6, there were tied 0
+with class sum: 7, there were tied 0
+with class sum: 8, there were tied 0
+with class sum: 9, there were tied 2
+with class sum: 10, there were tied 394
+with class sum: 11, there were tied 260
+with class sum: 12, there were tied 245
+with class sum: 13, there were tied 109
+with class sum: 14, there were tied 0
+with class sum: 15, there were tied 0
+with class sum: 16, there were tied 0
+with class sum: 17, there were tied 0
+with class sum: 18, there were tied 0
+with class sum: 19, there were tied 0
+Accuracy: 100.0
+number of times predictions were tied: sum= 1010
+with class sum: 0, there were tied 0
+with class sum: 1, there were tied 0
+with class sum: 2, there were tied 0
+with class sum: 3, there were tied 0
+with class sum: 4, there were tied 0
+with class sum: 5, there were tied 0
+with class sum: 6, there were tied 0
+with class sum: 7, there were tied 0
+with class sum: 8, there were tied 0
+with class sum: 9, there were tied 0
+with class sum: 10, there were tied 404
+with class sum: 11, there were tied 237
+with class sum: 12, there were tied 277
+with class sum: 13, there were tied 92
+with class sum: 14, there were tied 0
+with class sum: 15, there were tied 0
+with class sum: 16, there were tied 0
+with class sum: 17, there were tied 0
+with class sum: 18, there were tied 0
+with class sum: 19, there were tied 0
+Accuracy: 100.0
+number of times predictions were tied: sum= 1010
+with class sum: 0, there were tied 0
+with class sum: 1, there were tied 0
+with class sum: 2, there were tied 0
+with class sum: 3, there were tied 0
+with class sum: 4, there were tied 0
+with class sum: 5, there were tied 0
+with class sum: 6, there were tied 0
+with class sum: 7, there were tied 0
+with class sum: 8, there were tied 0
+with class sum: 9, there were tied 0
+with class sum: 10, there were tied 487
+with class sum: 11, there were tied 0
+with class sum: 12, there were tied 0
+with class sum: 13, there were tied 523
+with class sum: 14, there were tied 0
+with class sum: 15, there were tied 0
+with class sum: 16, there were tied 0
+with class sum: 17, there were tied 0
+with class sum: 18, there were tied 0
+with class sum: 19, there were tied 0
+TA Accuracy: 100.0
+
+Class 1 Negative Clauses:
+
+State: 4091 state prob: 0.998779296875
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 4092 state prob: 0.9990234375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 4095 state prob: 0.999755859375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 4094 state prob: 0.99951171875
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 4095 state prob: 0.999755859375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 4095 state prob: 0.999755859375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 4095 state prob: 0.999755859375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 4095 state prob: 0.999755859375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 4093 state prob: 0.999267578125
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 4094 state prob: 0.99951171875
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0

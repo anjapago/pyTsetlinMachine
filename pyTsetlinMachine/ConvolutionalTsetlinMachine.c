@@ -240,7 +240,6 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 		output_one_patches_count = 0;
 		for (int patch = 0; patch < tm->number_of_patches; ++patch) {
 			unsigned int output = 1;
-			unsigned int outputd = 1;
 			unsigned int all_exclude = 1;
 
 			for (int k = 0; k < tm->number_of_ta_chunks-1; k++) {
@@ -282,7 +281,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 //                    printf("dlir output: %d \n ", outputd);
 //				}
 
-				if (!outputd) {
+				if (!output) {
 					break;
 				}
 				//all_exclude = all_exclude && (ta_state[pos] == 0);
@@ -299,6 +298,11 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 			//int ta_actions = ta_state[pos];
             int k = tm->number_of_ta_chunks - 1;
             int ta_actions = get_ta_chunk_actions(tm, k, j, dlri);
+
+//            if(PREDICT && (get_ta_chunk_actions(tm, k, j, 0)!=get_ta_chunk_actions(tm, k, j, 1))){
+//                printf(" dlri != TA  %d != %d", get_ta_chunk_actions(tm, k, j, 0), get_ta_chunk_actions(tm, k, j, 1));
+//
+//            }
 
             output = output &&
                      (ta_actions & Xi[patch*tm->number_of_ta_chunks + tm->number_of_ta_chunks - 1] & tm->filter) ==

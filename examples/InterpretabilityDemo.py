@@ -20,14 +20,18 @@ Y_test = np.logical_xor(X_test[:,0], X_test[:,1]).astype(dtype=np.uint32)
 
 # n_clauses = 10
 # nstate_bits = 16
+# T= 15
+# s=3.0
 
 n_clauses = 6
 nstate_bits = 16
-tm = MultiClassTsetlinMachine(n_clauses, 15, 3.0, dlri = True, indexed=False,
+T = 15
+s = 3.0
+tm = MultiClassTsetlinMachine(n_clauses, T, s, dlri = True, indexed=False,
                               number_of_state_bits=nstate_bits, boost_true_positive_feedback=0)
 
 print("fit:")
-tm.fit(X_train, Y_train, epochs=1000)
+tm.fit(X_train, Y_train, epochs=10000)
 
 print("\nClass 0 Positive Clauses:\n")
 class_num = 0
@@ -98,11 +102,12 @@ print("num ta state bits: "+str(tm.number_of_state_bits))
 #print(ta_states)
 #print(len(ta_states[0]))
 
-print("Accuracy:", 100*(tm.predict(X_test) == Y_test).mean())
-print("Accuracy:", 100*(tm.predict(X_test) == Y_test).mean())
-print("Accuracy:", 100*(tm.predict(X_test) == Y_test).mean())
-print("Accuracy:", 100*(tm.predict(X_test) == Y_test).mean())
-print("Accuracy:", 100*(tm.predict(X_test) == Y_test).mean())
+print("Accuracy:", 100*(tm.predict(X_test, 1) == Y_test).mean())
+print("Accuracy:", 100*(tm.predict(X_test, 1) == Y_test).mean())
+print("Accuracy:", 100*(tm.predict(X_test, 1) == Y_test).mean())
+print("Accuracy:", 100*(tm.predict(X_test, 1) == Y_test).mean())
+print("Accuracy:", 100*(tm.predict(X_test, 1) == Y_test).mean())
+print("TA Accuracy:", 100*(tm.predict(X_test, 0) == Y_test).mean())
 
 # compare actions from regular with actions from the dlri
 mc_tm_class = 1

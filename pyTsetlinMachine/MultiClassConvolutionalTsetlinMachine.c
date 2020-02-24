@@ -78,7 +78,7 @@ void mc_tm_destroy(struct MultiClassTsetlinMachine *mc_tm)
 /*** Predict classes of inputs X ***/
 /***********************************/
 
-void mc_tm_predict(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X, int *y, int number_of_examples)
+void mc_tm_predict(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X, int *y, int number_of_examples, int dlri)
 {
 	int max_class;
 	int max_class_sum;
@@ -89,10 +89,10 @@ void mc_tm_predict(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X, int 
 
 	for (int l = 0; l < number_of_examples; l++) {
 		// Identify class with largest output
-		max_class_sum = tm_score(mc_tm->tsetlin_machines[0], &X[pos]);
+		max_class_sum = tm_score(mc_tm->tsetlin_machines[0], &X[pos], dlri);
 		max_class = 0;
 		for (int i = 1; i < mc_tm->number_of_classes; i++) {	
-			int class_sum = tm_score(mc_tm->tsetlin_machines[i], &X[pos]);
+			int class_sum = tm_score(mc_tm->tsetlin_machines[i], &X[pos], dlri);
 			if (max_class_sum < class_sum) {
 				max_class_sum = class_sum;
 				max_class = i;
@@ -204,7 +204,7 @@ void mc_tm_transform(struct MultiClassTsetlinMachine *mc_tm, unsigned int *X,  u
 	unsigned long transformed_feature = 0;
 	for (int l = 0; l < number_of_examples; l++) {
 		for (int i = 0; i < mc_tm->number_of_classes; i++) {	
-			tm_score(mc_tm->tsetlin_machines[i], &X[pos]);
+			tm_score(mc_tm->tsetlin_machines[i], &X[pos], mc_tm->tsetlin_machines[i]->dlri);
 
 			for (int j = 0; j < mc_tm->tsetlin_machines[i]->number_of_clauses; ++j) {
 				int clause_chunk = j / 32;

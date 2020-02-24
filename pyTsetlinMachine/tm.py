@@ -343,7 +343,7 @@ class MultiClassTsetlinMachine():
 
 		return
 
-	def predict(self, X):
+	def predict(self, X, dlri):
 		number_of_examples = X.shape[0]
 		
 		self.encoded_X = np.ascontiguousarray(np.empty(int(number_of_examples * self.number_of_patches * self.number_of_ta_chunks), dtype=np.uint32))
@@ -360,7 +360,7 @@ class MultiClassTsetlinMachine():
 		if self.indexed:
 			_lib.itm_predict(self.itm, self.encoded_X, Y, number_of_examples)
 		else:
-			_lib.mc_tm_predict(self.mc_tm, self.encoded_X, Y, number_of_examples)
+			_lib.mc_tm_predict(self.mc_tm, self.encoded_X, Y, number_of_examples, dlri)
 
 		return Y
 	

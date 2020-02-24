@@ -223,12 +223,12 @@ int get_ta_chunk_actions(struct TsetlinMachine *tm, int ta_chunk, int clause, in
 }
 
 /* Calculate the output of each clause using the actions of each Tsetline Automaton. */
-static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigned int *Xi, int predict)
+static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigned int *Xi, int predict, int dlri)
 {
 	int output_one_patches_count;
 
 	//unsigned int *ta_state = tm->ta_state;
-	int dlri = tm->dlri;
+	//int dlri = tm->dlri;
 
 	for (int j = 0; j < tm->number_of_clause_chunks; j++) {
 		tm->clause_output[j] = 0;
@@ -479,8 +479,8 @@ void tm_update(struct TsetlinMachine *tm, unsigned int *Xi, int target)
 	/*******************************/
 	/*** Calculate Clause Output ***/
 	/*******************************/
-
-	tm_calculate_clause_output(tm, Xi, UPDATE);
+    int dlri = tm->dlri;
+	tm_calculate_clause_output(tm, Xi, UPDATE, dlri);
 
 	/***************************/
 	/*** Sum up Clause Votes ***/
@@ -495,12 +495,12 @@ void tm_update(struct TsetlinMachine *tm, unsigned int *Xi, int target)
 	tm_update_clauses(tm, Xi, class_sum, target);
 }
 
-int tm_score(struct TsetlinMachine *tm, unsigned int *Xi) {
+int tm_score(struct TsetlinMachine *tm, unsigned int *Xi, int dlri) {
 	/*******************************/
 	/*** Calculate Clause Output ***/
 	/*******************************/
 
-	tm_calculate_clause_output(tm, Xi, PREDICT);
+	tm_calculate_clause_output(tm, Xi, PREDICT, dlri);
 
 	/***************************/
 	/*** Sum up Clause Votes ***/
@@ -655,7 +655,7 @@ void tm_update_regression(struct TsetlinMachine *tm, unsigned int *Xi, int targe
 	/*** Calculate Clause Output ***/
 	/*******************************/
 
-	tm_calculate_clause_output(tm, Xi, UPDATE);
+	tm_calculate_clause_output(tm, Xi, UPDATE, tm->dlri);
 
 	/***************************/
 	/*** Sum up Clause Votes ***/
@@ -757,7 +757,7 @@ int tm_score_regression(struct TsetlinMachine *tm, unsigned int *Xi) {
 	/*** Calculate Clause Output ***/
 	/*******************************/
 
-	tm_calculate_clause_output(tm, Xi, PREDICT);
+	tm_calculate_clause_output(tm, Xi, PREDICT, tm->dlri);
 
 	/***************************/
 	/*** Sum up Clause Votes ***/

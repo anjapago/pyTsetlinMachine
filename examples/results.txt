@@ -1,0 +1,191 @@
+/Users/andreapagotto/CLionProjects/pyTsetlinMachine/venv/bin/python /Users/andreapagotto/CLionProjects/pyTsetlinMachine/examples/InterpretabilityDemo.py
+modified numpy
+/Users/andreapagotto/CLionProjects/pyTsetlinMachine/build/lib.macosx-10.6-intel-3.6/libTM.cpython-36m-darwin.so
+True
+fit:
+init mc tm
+encode tm (append negated)
+fit mc tm
+
+Class 0 Positive Clauses:
+
+Clause #0:
+ x0 ∧  x1
+Clause #2:
+ x0 ∧  x1
+Clause #4:
+ x0 ∧  x1
+
+Class 0 Negative Clauses:
+
+Clause #1:
+ x0 ∧ ¬x1
+Clause #3:
+ x0 ∧ ¬x1
+Clause #5:
+ x1 ∧ ¬x0
+
+Class 1 Positive Clauses:
+
+Clause #0:
+ x0 ∧ ¬x1
+Clause #2:
+ x0 ∧ ¬x1
+Clause #4:
+ x0 ∧ ¬x1
+
+Class 1 Negative Clauses:
+
+Clause #1:
+ x0 ∧  x1
+Clause #3:
+ x0 ∧  x1
+Clause #5:
+¬x0 ∧ ¬x1
+num clause chunks: 1.15625
+num clauses: 6
+num ta chunks: 1
+num ta state bits: 16
+Accuracy: 59.3
+Accuracy: 58.3
+Accuracy: 57.75
+Accuracy: 57.05
+Accuracy: 58.25
+
+Class 1 Negative Clauses:
+
+State: 35158 state prob: 0.536468505859375
+ avg dlri action: 0.53
+ non dlri action: 1
+State: 35137 state prob: 0.5361480712890625
+ avg dlri action: 0.55
+ non dlri action: 1
+State: 6502 state prob: 0.099212646484375
+ avg dlri action: 0.05
+ non dlri action: 0
+State: 10066 state prob: 0.153594970703125
+ avg dlri action: 0.18
+ non dlri action: 0
+State: 36794 state prob: 0.561431884765625
+ avg dlri action: 0.57
+ non dlri action: 1
+State: 36143 state prob: 0.5514984130859375
+ avg dlri action: 0.67
+ non dlri action: 1
+State: 5555 state prob: 0.0847625732421875
+ avg dlri action: 0.04
+ non dlri action: 0
+State: 9187 state prob: 0.1401824951171875
+ avg dlri action: 0.11
+ non dlri action: 0
+State: 8390 state prob: 0.128021240234375
+ avg dlri action: 0.1
+ non dlri action: 0
+State: 4901 state prob: 0.0747833251953125
+ avg dlri action: 0.07
+ non dlri action: 0
+State: 37554 state prob: 0.573028564453125
+ avg dlri action: 0.52
+ non dlri action: 1
+State: 37463 state prob: 0.5716400146484375
+ avg dlri action: 0.5
+ non dlri action: 1
+
+Process finished with exit code 0
+
+
+# Results with higher number of epochs, to reach convergence:
+/Users/andreapagotto/CLionProjects/pyTsetlinMachine/venv/bin/python /Users/andreapagotto/CLionProjects/pyTsetlinMachine/examples/InterpretabilityDemo.py
+modified numpy
+/Users/andreapagotto/CLionProjects/pyTsetlinMachine/build/lib.macosx-10.6-intel-3.6/libTM.cpython-36m-darwin.so
+True
+fit:
+init mc tm
+encode tm (append negated)
+fit mc tm
+
+Class 0 Positive Clauses:
+
+Clause #0:
+¬x0 ∧ ¬x1
+Clause #2:
+ x0 ∧  x1
+Clause #4:
+ x0 ∧  x1
+
+Class 0 Negative Clauses:
+
+Clause #1:
+¬x1
+Clause #3:
+ x0
+Clause #5:
+ x0 ∧ ¬x1
+
+Class 1 Positive Clauses:
+
+Clause #0:
+ x0 ∧ ¬x1
+Clause #2:
+ x0 ∧ ¬x1
+Clause #4:
+ x0 ∧ ¬x1
+
+Class 1 Negative Clauses:
+
+Clause #1:
+¬x0 ∧ ¬x1
+Clause #3:
+ x0 ∧  x1
+Clause #5:
+ x0 ∧  x1
+num clause chunks: 1.15625
+num clauses: 6
+num ta chunks: 1
+num ta state bits: 16
+Accuracy: 82.5
+Accuracy: 82.6
+Accuracy: 81.55
+Accuracy: 81.45
+Accuracy: 82.35
+
+Class 1 Negative Clauses:
+
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 65530 state prob: 0.999908447265625
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 65533 state prob: 0.9999542236328125
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 65531 state prob: 0.9999237060546875
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 65532 state prob: 0.99993896484375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 65535 state prob: 0.9999847412109375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 65535 state prob: 0.9999847412109375
+ avg dlri action: 1.0
+ non dlri action: 1
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+State: 0 state prob: 0.0
+ avg dlri action: 0.0
+ non dlri action: 0
+
+Process finished with exit code 0

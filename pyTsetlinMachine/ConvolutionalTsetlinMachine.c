@@ -227,7 +227,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 {
 	int output_one_patches_count;
 
-	unsigned int *ta_state = tm->ta_state;
+	//unsigned int *ta_state = tm->ta_state;
 	int dlri = tm->dlri;
 
 	for (int j = 0; j < tm->number_of_clause_chunks; j++) {
@@ -245,7 +245,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 
 			for (int k = 0; k < tm->number_of_ta_chunks-1; k++) {
 			    //printf("num ta chunk %d \n", k);
-				unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + k*tm->number_of_state_bits + tm->number_of_state_bits-1;
+//				unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + k*tm->number_of_state_bits + tm->number_of_state_bits-1;
 				// actions for all the ta in the chunk are: ta_state[pos]
 //				printf("output %d, ta_state[pos] %d ", output, ta_state[pos]);
 //				printf("(ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]) %d \n ", (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + k]));
@@ -295,7 +295,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 //                      (ta_state[pos] & Xi[patch*tm->number_of_ta_chunks + tm->number_of_ta_chunks - 1] & tm->filter) ==
 //                      (ta_state[pos] & tm->filter);
 
-            unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + (tm->number_of_ta_chunks-1)*tm->number_of_state_bits + tm->number_of_state_bits-1;
+//            unsigned int pos = j*tm->number_of_ta_chunks*tm->number_of_state_bits + (tm->number_of_ta_chunks-1)*tm->number_of_state_bits + tm->number_of_state_bits-1;
 			//int ta_actions = ta_state[pos];
             int k = tm->number_of_ta_chunks - 1;
             int ta_actions = get_ta_chunk_actions(tm, k, j, dlri);
@@ -316,28 +316,28 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 //                output = output &&
 //                      (ta_actions & Xi[patch*tm->number_of_ta_chunks + tm->number_of_ta_chunks - 1] & tm->filter) ==
 //                      (ta_actions & tm->filter);
-////                for (int chunk_pos=0; chunk_pos<32; chunk_pos++){
-////                    // get the action for the ta
-////                    //int ta_num = 1; // the position of the ta within the chunk: "chunk_pos"
-////                    int action = tm_ta_action(tm, j, k*32+chunk_pos, 1); // j is the clause number
-////
-////                    // and it with the Xii: if action is 1, check if Xi feature is there, if its 0, don't need to check
-////                    int clause_output = 1;
-////
-////                    if (action){
-////                        int feature_bits = Xi[patch*tm->number_of_ta_chunks + k];
-////                        // check the bit at position ta_num
-////                        int bit = (feature_bits >> chunk_pos) & 1U;
-////                        bit = (tm->filter >> chunk_pos) & 1U;
-////
-////                        if(!bit){
-////                            clause_output = 0;
-////                        }
-////                    }
-////                    // && it with the current output and save it in output again
-////                    output = output && clause_output;
-////                }
-////
+//                for (int chunk_pos=0; chunk_pos<32; chunk_pos++){
+//                    // get the action for the ta
+//                    //int ta_num = 1; // the position of the ta within the chunk: "chunk_pos"
+//                    int action = tm_ta_action(tm, j, k*32+chunk_pos, 1); // j is the clause number
+//
+//                    // and it with the Xii: if action is 1, check if Xi feature is there, if its 0, don't need to check
+//                    int clause_output = 1;
+//
+//                    if (action){
+//                        int feature_bits = Xi[patch*tm->number_of_ta_chunks + k];
+//                        // check the bit at position ta_num
+//                        int bit = (feature_bits >> chunk_pos) & 1U;
+//                        bit = (tm->filter >> chunk_pos) & 1U;
+//
+//                        if(!bit){
+//                            clause_output = 0;
+//                        }
+//                    }
+//                    // && it with the current output and save it in output again
+//                    output = output && clause_output;
+//                }
+//
 //                all_exclude = all_exclude && ((ta_state[pos] & tm->filter) == 0);
 //
 //                output = output && !(predict == PREDICT && all_exclude == 1);
@@ -382,7 +382,7 @@ static inline void tm_calculate_clause_output(struct TsetlinMachine *tm, unsigne
 //            }
 
 		}
-	
+	    // store the outputs of the clauses in the tm object for each clause chunk
 		if (output_one_patches_count > 0) {
 			unsigned int clause_chunk = j / 32;
 			unsigned int clause_chunk_pos = j % 32;

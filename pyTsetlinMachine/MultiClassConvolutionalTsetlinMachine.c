@@ -149,9 +149,9 @@ int mc_tm_ta_state(struct MultiClassTsetlinMachine *mc_tm, int class, int clause
 	return tm_ta_state(mc_tm->tsetlin_machines[class], clause, ta);
 }
 
-int mc_tm_ta_action(struct MultiClassTsetlinMachine *mc_tm, int class, int clause, int ta, int print)
+int mc_tm_ta_action(struct MultiClassTsetlinMachine *mc_tm, int class, int clause, int ta, int print, int dlri)
 {
-    int action = tm_ta_action(mc_tm->tsetlin_machines[class], clause, ta, print, mc_tm->tsetlin_machines[class]->dlri);
+    int action = tm_ta_action(mc_tm->tsetlin_machines[class], clause, ta, print, dlri);
     //printf("return mc_tm_ta_action: %d \n", action);
 	return action;
 	//return 22;

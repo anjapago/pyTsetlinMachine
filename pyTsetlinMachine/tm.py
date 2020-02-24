@@ -367,8 +367,8 @@ class MultiClassTsetlinMachine():
 	def ta_state(self, mc_tm_class, clause, ta):
 		return _lib.mc_tm_ta_state(self.mc_tm, mc_tm_class, clause, ta)
 
-	def ta_action(self, mc_tm_class, clause, ta, print_output):
-		return _lib.mc_tm_ta_action(self.mc_tm, mc_tm_class, clause, ta, print_output)
+	def ta_action(self, mc_tm_class, clause, ta, print_output, dlri):
+		return _lib.mc_tm_ta_action(self.mc_tm, mc_tm_class, clause, ta, print_output, dlri)
 
 	def get_state(self):
 		state_list = []

@@ -6,10 +6,14 @@ import numpy as np
 # num_exs_train = 5000
 # num_exs_test = 5000
 
-number_of_features = 3
-noise = 0
-num_exs_train = 8000000
-num_exs_test = 2000
+# number_of_features = 3
+# noise = 0
+
+number_of_features = 20
+noise = 0.1
+
+num_exs_train = 5000
+num_exs_test = 5000
 
 X_train = np.random.randint(0, 2, size=(num_exs_train, number_of_features), dtype=np.uint32)
 Y_train = np.logical_xor(X_train[:,0], X_train[:,1]).astype(dtype=np.uint32)
@@ -24,14 +28,16 @@ Y_test = np.logical_xor(X_test[:,0], X_test[:,1]).astype(dtype=np.uint32)
 # s=3.0
 
 n_clauses = 10
-nstate_bits = 14
+nstate_bits = 8 #14
 T = 15
 s = 300.0
-tm = MultiClassTsetlinMachine(n_clauses, T, s, dlri = True, indexed=False,
+tm = MultiClassTsetlinMachine(n_clauses, T, s, #dlri = False,
+                              indexed=False,
                               number_of_state_bits=nstate_bits, boost_true_positive_feedback=0)
 
 print("fit:")
-tm.fit(X_train, Y_train, epochs=1)
+epochs = 200
+tm.fit(X_train, Y_train, epochs=epochs)
 
 print("\nClass 0 Positive Clauses:\n")
 class_num = 0
@@ -40,7 +46,8 @@ for j in range(0, n_clauses, 2):
     print("Clause #%d: " % (j))
     l = []
     for k in range(number_of_features*2):
-        action = tm.ta_action(class_num, j, k, 0, 0)
+        #action = tm.ta_action(class_num, j, k, 0) #, 0)
+        action = tm.ta_action(class_num, j, k)#, 0)
         if action == 1:
             if k < number_of_features:
                 l.append(" x%d" % (k))
@@ -55,7 +62,7 @@ for j in range(1, n_clauses, 2):
     print("Clause #%d: " % (j))
     l = []
     for k in range(number_of_features*2):
-        action = tm.ta_action(class_num, j, k, 0, 0)
+        action = tm.ta_action(class_num, j, k)#, 0, 0)
         if action == 1:
             if k < number_of_features:
                 l.append(" x%d" % (k))
@@ -70,7 +77,7 @@ for j in range(0, n_clauses, 2):
     print("Clause #%d: " % (j))
     l = []
     for k in range(number_of_features*2):
-        action = tm.ta_action(class_num, j, k, 0, 0)
+        action = tm.ta_action(class_num, j, k)#, 0, 0)
         if action == 1:
             if k < number_of_features:
                 l.append(" x%d" % (k))
@@ -85,7 +92,7 @@ for j in range(1, n_clauses, 2):
     print("Clause #%d: " % (j))
     l = []
     for k in range(number_of_features*2):
-        action = tm.ta_action(class_num, j, k, 0, 0)
+        action = tm.ta_action(class_num, j, k)#, 0, 0)
         if action == 1:
             if k < number_of_features:
                 l.append(" x%d" % (k))

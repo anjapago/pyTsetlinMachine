@@ -176,5 +176,5 @@ for rep in range(0,10, 1):
             results_df = results_df.append(row, ignore_index=True)
     #results_df[noise_lev] = accuracies
 
-    results_df.to_csv("imdb_noiselevels_T80_"+str(exp_id)+".csv", index = False)
+    results_df.to_csv("imdb_noiselevels_"+str(exp_id)+".csv", index = False)
 

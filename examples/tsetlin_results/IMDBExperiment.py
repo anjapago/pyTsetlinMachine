@@ -127,17 +127,17 @@ print("test size")
 # n_clauses = 10
 # nstate_bits = 8
 # s = 3.0
-noise_levels = [0, 0.15, 0.3]
+noise_levels = [0, 0.3]
 s_vals = [3, 30, 300]
 nstate_bits_vals = [4, 8]
-n_clauses_vals = [100, 1000, 10000]
+n_clauses_vals = [1000]#, 1000, 10000]
 
 param_combos = itertools.product(noise_levels, s_vals, nstate_bits_vals, n_clauses_vals)
 
 results_df = pd.DataFrame(columns=['rep', 'epoch', 'num_examples', 'accuracy',
                                    'noise_level', 's', 'num_clauses', 'num_states'])
 
-exp_id = str(time.time())[0:5]
+exp_id = str(time.time()).split('.')[1]
 
 for rep in range(0,10, 1):
     print("REP:********"+str(rep))
@@ -145,9 +145,9 @@ for rep in range(0,10, 1):
     for (noise_lev, s, nstate_bits, n_clauses) in param_combos:
 
         print("params: "+ str((noise_lev, s, nstate_bits, n_clauses)))
-        T = n_clauses
+        #T = n_clauses
         #10000, 80, 27.0
-        #T = 80
+        T = 80
         tm = MultiClassTsetlinMachine(n_clauses, T, s,
                                       boost_true_positive_feedback=0,
                                       number_of_state_bits=nstate_bits)
@@ -176,5 +176,5 @@ for rep in range(0,10, 1):
             results_df = results_df.append(row, ignore_index=True)
     #results_df[noise_lev] = accuracies
 
-    results_df.to_csv("imdb_noiselevels_"+str(exp_id)+".csv", index = False)
+    results_df.to_csv("imdb_noiselevels_T80_1000c_"+str(exp_id)+".csv", index = False)
 

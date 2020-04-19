@@ -12,7 +12,7 @@ import pandas as pd
 MAX_NGRAM = 2
 
 NUM_WORDS=5000
-INDEX_FROM=2
+INDEX_FROM=2 
 
 FEATURES=5000
 
@@ -61,18 +61,18 @@ for i in range(train_y.shape[0]):
 	terms = []
 	for word_id in train_x[i]:
 		terms.append(id_to_word[word_id])
-
+	
 	for N in range(1,MAX_NGRAM+1):
 		grams = [terms[j:j+N] for j in range(len(terms)-N+1)]
 		for gram in grams:
 			phrase = " ".join(gram)
-
+			
 			if phrase in vocabulary:
 				vocabulary[phrase] += 1
 			else:
 				vocabulary[phrase] = 1
 
-# Assign a bit position to each N-gram (minimum frequency 10)
+# Assign a bit position to each N-gram (minimum frequency 10) 
 
 phrase_bit_nr = {}
 bit_nr_phrase = {}
@@ -122,7 +122,7 @@ for i in range(test_y.shape[0]):
 		for gram in grams:
 			phrase = " ".join(gram)
 			if phrase in phrase_bit_nr:
-				X_test[i,phrase_bit_nr[phrase]] = 1
+				X_test[i,phrase_bit_nr[phrase]] = 1				
 
 	Y_test[i] = test_y[i]
 
@@ -139,22 +139,22 @@ print("X_train shape, X_test shape")
 print(X_train.shape)
 print(X_test.shape)
 
-# test n_clauses
-n_clauses_list = [5000, 10000, 15000]
-nc_results_df = pd.DataFrame(columns=['rep', 'epoch', 'num_examples', 'accuracy',
-									 'noise_level', 's', 'num_clauses', 'num_states'])
+# test s
+s_params = [3, 30, 300]
+s_results_df = pd.DataFrame(columns=['rep', 'epoch', 'num_examples', 'accuracy',
+								   'noise_level', 's', 'num_clauses', 'num_states'])
 
 noise_lev = 0
-s_param = 30
+#s_param = 27.0
 T_param = 80
-#n_clauses = 10000
+n_clauses =  10000
 state_bits = 8
 
 exp_id = str(time()).split('.')[1]
 
-for n_clauses in n_clauses_list:
+for s_param in s_params:
 	tm = MultiClassTsetlinMachine(n_clauses, T_param, s_param, number_of_state_bits=state_bits, indexed=False)
-	print("nclauses: "+str(n_clauses))
+	print("s param: "+str(s_param))
 	print("\nAccuracy over 50 epochs:\n")
 	for i in range(50):
 		start_training = time()
@@ -174,5 +174,8 @@ for n_clauses in n_clauses_list:
 			   'num_clauses': n_clauses,
 			   'num_states': 2**state_bits,
 			   'time': start_training-stop_training}
-		nc_results_df = nc_results_df.append(row, ignore_index=True)
-		nc_results_df.to_csv("imdb_nclauses_5000examples_"+str(exp_id)+".csv", index = False)
+		s_results_df = s_results_df.append(row, ignore_index=True)
+		s_results_df.to_csv("imdb_sparam_5000examples_"+str(exp_id)+".csv", index = False)
+
+
+
